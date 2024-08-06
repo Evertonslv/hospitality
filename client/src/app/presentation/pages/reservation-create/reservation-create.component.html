@@ -1,0 +1,63 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <mat-card class="reservation-card">
+    <mat-card-title>Fazer Reserva</mat-card-title>
+    <mat-card-content>
+      <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+        <button type="button" class="button-search" mat-raised-button color="primary" (click)="openSearchGuestModal()">Pesquisar Hóspede</button>
+
+        <div *ngIf="selectedGuest">
+          <mat-card class="guest-info">
+            <div class="close-header">
+              <button mat-icon-button tabindex="-1" (click)="deleteGuest()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <p><strong>Nome:</strong> {{ selectedGuest.name }}</p>
+            <p><strong>Documento:</strong> {{ selectedGuest.document }}</p>
+            <p><strong>Telefone:</strong> {{ selectedGuest.phone }}</p>
+          </mat-card>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Escolha um intervalo de datas para reserva</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate formControlName="checkInDate" placeholder="Data inicial">
+            <input matEndDate formControlName="checkOutDate" placeholder="Data final">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <mat-checkbox formControlName="hasCar">Utiliza Carro?</mat-checkbox>
+
+        <button mat-raised-button color="primary" class="full-width" type="submit">
+          Criar Reserva
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<app-footer></app-footer>
+
+<ng-template #searchGuestModal let-modal>
+  <h2 mat-dialog-title>Pesquisar Hóspede</h2>
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Filtro</mat-label>
+      <input matInput [(ngModel)]="guestFilterRequest.filter">
+      <mat-hint>Pesquise pelo Nome, Documento ou Telefone</mat-hint>
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" class="button-search" (click)="searchGuests()">Pesquisar</button>
+
+    <app-table
+      [dataSource]="searchResults"
+      [displayedColumns]="displayedColumns"
+      [actionButton]="{ label: 'Selecionar', onClick: selectGuest }">
+    </app-table>
+
+  </mat-dialog-content>
+</ng-template>

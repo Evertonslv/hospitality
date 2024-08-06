@@ -1,0 +1,32 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+$hospitality-client-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$azure-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  density: (
+    scale: 0,
+  )
+));
+
+:root {
+  @include mat.all-component-themes($hospitality-client-theme);
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; background-color: #f5f5f5; }
+
+.warning-snackbar {
+  color: #fff;
+  font-size: 14px;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.mat-simple-snackbar-action {
+  color: #fff;
+}
+

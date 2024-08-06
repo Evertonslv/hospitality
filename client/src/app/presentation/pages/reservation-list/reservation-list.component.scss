@@ -1,0 +1,53 @@
+.page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.page-custom {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  padding: 50px 100px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+
+.button-toggle-container {
+  width: 50%;
+}
+
+mat-button-toggle-group {
+  display: flex;
+  width: 100%;
+}
+
+mat-button-toggle {
+  flex: 1;
+  text-transform: none;
+}
+
+.guest-info {
+  background-color: #e0f7fa;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  p {
+    margin: 5px 0 !important;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-top: 11px !important;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}

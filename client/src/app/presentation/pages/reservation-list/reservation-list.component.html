@@ -1,0 +1,41 @@
+<app-header></app-header>
+
+<div class="page-container">
+  <div class="page-custom">
+    <div class="button-toggle-container">
+      <mat-button-toggle-group #group="matButtonToggleGroup" [value]="selectedButton"
+                               (change)="onSelectionChange($event)">
+        <mat-button-toggle value="1">Reservas sem CheckIn</mat-button-toggle>
+        <mat-button-toggle value="2">Reservas sem CheckOut</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    <app-table
+      [dataSource]="dataSource"
+      [displayedColumns]="displayedColumns"
+      [actionButton]="configButtonTable">
+    </app-table>
+  </div>
+</div>
+
+<app-footer></app-footer>
+
+<ng-template #detailTotalAmountModal let-modal>
+  <h2 mat-dialog-title>Detalhes do CheckOut</h2>
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="full-width">
+
+      <div *ngIf="detailCheckOut">
+        <mat-card class="guest-info">
+          <p *ngFor="let detail of detailCheckOut">
+            <strong>{{ detail.description }}:</strong> {{ detail.amount | currency:'BRL':'symbol':'1.2-2' }}
+          </p>
+        </mat-card>
+      </div>
+
+    </mat-form-field>
+    <div class="button-container">
+      <button mat-raised-button color="accent" (click)="closeModal()">Fechar</button>
+    </div>
+  </mat-dialog-content>
+</ng-template>

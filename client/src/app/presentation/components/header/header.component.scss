@@ -1,0 +1,29 @@
+@import "colors.scss";
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  background-color: $green;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+img {
+  width: 60px;
+  align-self: center;
+}
+
+.header-toolbar button {
+  color: $white;
+
+  &:hover {
+    color: $greenDark;
+  }
+}
