@@ -10,7 +10,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 public class Reservation {
@@ -50,15 +53,15 @@ public class Reservation {
 
     public void checkIn(LocalDateTime checkInTime) {
         if (ReservationStatus.CHECKED_IN.equals(status)) {
-            throw new InvalidInformationException("Check-in has already been done");
+            throw new InvalidInformationException("O check-in já foi realizado");
         }
 
         if (checkInTime.toLocalDate().isBefore(checkInDate)) {
-            throw new InvalidInformationException("Check-in cannot be done before check-in date");
+            throw new InvalidInformationException("O check-in não pode ser realizado antes da data de check-in");
         }
 
         if (checkInTime.toLocalTime().isBefore(LocalTime.of(14, 0))) {
-            throw new InvalidInformationException("Check-in cannot be done before 2 PM on the check-in date");
+            throw new InvalidInformationException("O check-in não pode ser realizado antes das 14h na data de check-in");
         }
 
         this.checkInTime = checkInTime;
@@ -67,11 +70,11 @@ public class Reservation {
 
     public void checkOut(LocalDateTime checkOutTime) {
         if (ReservationStatus.CHECKED_OUT.equals(status)) {
-            throw new InvalidInformationException("Check-out has already been done");
+            throw new InvalidInformationException("O check-out já foi realizado");
         }
 
         if (!ReservationStatus.CHECKED_IN.equals(status) && checkInTime == null) {
-            throw new InvalidInformationException("Cannot check out without checking in first");
+            throw new InvalidInformationException("Não é possível fazer o check-out sem ter feito o check-in primeiro");
         }
 
         this.checkOutTime = checkOutTime;
@@ -81,48 +84,58 @@ public class Reservation {
     public List<ChargeDetail> calculateTotalAmount() {
         validateCheckoutStatus();
 
-        List<ChargeDetail> chargeDetails = new ArrayList<>();
+        Map<String, ChargeDetail> chargesMap = new HashMap<>();
         LocalDateTime currentDate = checkInTime;
 
         while (currentDate.isBefore(checkOutTime)) {
-            addDailyCharges(chargeDetails, currentDate);
+            processDailyCharges(chargesMap, currentDate);
             if (hasCar) {
-                addParkingCharges(chargeDetails, currentDate);
+                processParkingCharges(chargesMap, currentDate);
             }
             currentDate = currentDate.plusDays(1);
         }
 
         if (isCheckedOutLate()) {
-            addLateCheckoutCharge(chargeDetails, currentDate);
+            addLateCheckoutCharge(chargesMap);
         }
 
-        return chargeDetails;
+        return new ArrayList<>(chargesMap.values());
     }
 
-    private void addDailyCharges(List<ChargeDetail> chargeDetails, LocalDateTime date) {
+    private void processDailyCharges(Map<String, ChargeDetail> chargesMap, LocalDateTime date) {
         boolean isWeekend = isWeekend(date);
+        String description = isWeekend ? "Diária (final de semana)" : "Diária (dia de semana)";
+        double rate = isWeekend ? WEEKEND_RATE : WEEKDAY_RATE;
+        addCharge(chargesMap, description, rate);
+    }
+
+    private void processParkingCharges(Map<String, ChargeDetail> chargesMap, LocalDateTime date) {
+        boolean isWeekend = isWeekend(date);
+        String description = isWeekend ? "Taxa de estacionamento (final de semana)" : "Taxa de estacionamento (dia de semana)";
+        double rate = isWeekend ? WEEKEND_PARKING_RATE : WEEKDAY_PARKING_RATE;
+        addCharge(chargesMap, description, rate);
+    }
+
+    private void addLateCheckoutCharge(Map<String, ChargeDetail> chargesMap) {
+        boolean isWeekend = isWeekend(checkOutTime);
+        String description = isWeekend ? "Taxa de checkout atrasado (final de semana)" : "Taxa de checkout atrasado (dia de semana)";
         double dailyRate = isWeekend ? WEEKEND_RATE : WEEKDAY_RATE;
-        String description = isWeekend ? "Diária final de semana" : "Diária normal";
-        chargeDetails.add(new ChargeDetail(description, dailyRate));
-    }
-
-    private void addParkingCharges(List<ChargeDetail> chargeDetails, LocalDateTime date) {
-        boolean isWeekend = isWeekend(date);
-        double parkingRate = isWeekend ? WEEKEND_PARKING_RATE : WEEKDAY_PARKING_RATE;
-        String description = isWeekend ? "Taxa de estacionamento final de semana" : "Taxa de estacionamento normal";
-        chargeDetails.add(new ChargeDetail(description, parkingRate));
-    }
-
-    private void addLateCheckoutCharge(List<ChargeDetail> chargeDetails, LocalDateTime date) {
-        boolean isWeekend = isWeekend(date);
-        double dailyRate = isWeekend ? WEEKEND_RATE : WEEKDAY_RATE;
-        String description = isWeekend ? "Taxa de checkout atrasado final de semana" : "Taxa de checkout atrasado normal";
         double lateCheckoutFee = dailyRate * 0.5;
-        chargeDetails.add(new ChargeDetail(description, lateCheckoutFee));
+        addCharge(chargesMap, description, lateCheckoutFee);
     }
 
-    public double getTotalAmount(List<ChargeDetail> chargeDetails) {
-        return chargeDetails.stream().mapToDouble(ChargeDetail::amount).sum();
+    private void addCharge(Map<String, ChargeDetail> chargesMap, String description, double rate) {
+        chargesMap.merge(description, new ChargeDetail(description, rate, 1),
+                (existingDetail, newDetail) -> {
+                    existingDetail.addQuantity(newDetail.getQuantity());
+                    existingDetail.addamount(newDetail.getAmount());
+                    return existingDetail;
+                });
+    }
+
+    private boolean isWeekend(LocalDateTime date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     private boolean isCheckedOutLate() {
@@ -130,27 +143,27 @@ public class Reservation {
         return checkOutTime != null && checkOutTime.toLocalTime().isAfter(checkoutDeadline);
     }
 
-    private boolean isWeekend(LocalDateTime date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    public double getTotalAmount(List<ChargeDetail> chargeDetails) {
+        return chargeDetails.stream().mapToDouble(ChargeDetail::getAmount).sum();
     }
 
     private void validateDates() {
         if (guest == null) {
-            throw new MissingInformationException("Guest is required");
+            throw new MissingInformationException("O hóspede é obrigatório");
         }
 
         if (checkInDate == null || checkOutDate == null) {
-            throw new MissingInformationException("Check-in and Check-out dates are required");
+            throw new MissingInformationException("As datas de check-in e check-out são obrigatórias");
         }
 
         if (checkOutDate.isBefore(checkInDate)) {
-            throw new InvalidInformationException("Check-out date must be after check-in date");
+            throw new InvalidInformationException("A data de check-out deve ser posterior à data de check-in");
         }
     }
 
     private void validateCheckoutStatus() {
         if (!ReservationStatus.CHECKED_OUT.equals(status)) {
-            throw new InvalidInformationException("Cannot calculate total amount without checkout in first");
+            throw new InvalidInformationException("Não é possível calcular o valor total sem realizar o check-out primeiro");
         }
     }
 

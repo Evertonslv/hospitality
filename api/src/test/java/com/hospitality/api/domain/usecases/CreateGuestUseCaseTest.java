@@ -1,7 +1,6 @@
 package com.hospitality.api.domain.usecases;
 
 import com.hospitality.api.domain.entities.Guest;
-import com.hospitality.api.domain.exceptions.InvalidInformationException;
 import com.hospitality.api.domain.exceptions.MissingInformationException;
 import com.hospitality.api.domain.usecases.dtos.CreateGuestRequest;
 import com.hospitality.api.domain.usecases.dtos.GuestResponse;
@@ -16,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,7 +51,7 @@ public class CreateGuestUseCaseTest {
 
         assertThatThrownBy(() -> createGuestUseCase.execute(createGuestRequest))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Name is required");
+                .hasMessage("O nome é obrigatório");
 
         verifyNoMoreInteractions(guestGateway, guestDtoMapper);
     }
@@ -64,7 +62,7 @@ public class CreateGuestUseCaseTest {
 
         assertThatThrownBy(() -> createGuestUseCase.execute(createGuestRequest))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Document is required");
+                .hasMessage("O documento é obrigatório");
 
         verifyNoMoreInteractions(guestGateway, guestDtoMapper);
     }
@@ -75,7 +73,7 @@ public class CreateGuestUseCaseTest {
 
         assertThatThrownBy(() -> createGuestUseCase.execute(createGuestRequest))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Phone number is required");
+                .hasMessage("O número de telefone é obrigatório");
 
         verifyNoMoreInteractions(guestGateway, guestDtoMapper);
     }

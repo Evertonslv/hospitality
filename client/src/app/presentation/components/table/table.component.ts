@@ -32,7 +32,7 @@ import {MatButton} from "@angular/material/button"
 })
 export class TableComponent implements AfterViewInit, OnChanges {
   @Input() actionButton: { label: string, onClick: (element: any) => void }
-  @Input() dataSource: MatTableDataSource<any>
+  @Input() dataSource?: MatTableDataSource<any>
   @Input() displayedColumns: string[]
 
   @ViewChild(MatPaginator) paginator: MatPaginator

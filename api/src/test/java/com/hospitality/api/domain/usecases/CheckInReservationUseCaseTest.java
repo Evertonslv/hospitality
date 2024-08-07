@@ -107,7 +107,7 @@ public class CheckInReservationUseCaseTest {
 
         assertThatThrownBy(() -> checkInReservationUseCase.execute(reservationCheckInOutRequest))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in has already been done");
+                .hasMessage("O check-in já foi realizado");
 
         verify(reservationGateway).findById(reservationId);
         verifyNoMoreInteractions(reservationGateway, reservationDtoMapper);
@@ -120,7 +120,7 @@ public class CheckInReservationUseCaseTest {
 
         assertThatThrownBy(() -> checkInReservationUseCase.execute(reservationCheckInOutRequest))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in cannot be done before check-in date");
+                .hasMessage("O check-in não pode ser realizado antes da data de check-in");
 
         verify(reservationGateway).findById(reservationId);
         verifyNoMoreInteractions(reservationGateway, reservationDtoMapper);
@@ -133,7 +133,7 @@ public class CheckInReservationUseCaseTest {
 
         assertThatThrownBy(() -> checkInReservationUseCase.execute(reservationCheckInOutRequest))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in cannot be done before 2 PM on the check-in date");
+                .hasMessage("O check-in não pode ser realizado antes das 14h na data de check-in");
 
         verify(reservationGateway).findById(reservationId);
         verifyNoMoreInteractions(reservationGateway, reservationDtoMapper);

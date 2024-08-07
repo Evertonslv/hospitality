@@ -106,7 +106,7 @@ public class CreateReservationUseCaseTest {
 
         assertThatThrownBy(() -> createReservationUseCase.execute(request))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-out date must be after check-in date");
+                .hasMessage("A data de check-out deve ser posterior à data de check-in");
 
         verifyNoMoreInteractions(guestGateway, reservationGateway, reservationDtoMapper);
     }
@@ -122,7 +122,7 @@ public class CreateReservationUseCaseTest {
 
         assertThatThrownBy(() -> createReservationUseCase.execute(request))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in date cannot be in the past");
+                .hasMessage("A data de check-in não pode ser no passado");
 
         verifyNoMoreInteractions(guestGateway, reservationGateway, reservationDtoMapper);
     }

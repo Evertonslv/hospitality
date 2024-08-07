@@ -1,6 +1,5 @@
 package com.hospitality.api.infraestructure.controllers;
 
-import com.hospitality.api.domain.entities.Reservation;
 import com.hospitality.api.domain.usecases.*;
 import com.hospitality.api.domain.usecases.dtos.*;
 import com.hospitality.api.infraestructure.response.HospitalityResponse;

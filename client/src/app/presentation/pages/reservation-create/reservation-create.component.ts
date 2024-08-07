@@ -70,7 +70,6 @@ export class ReservationCreateComponent implements OnInit {
       })
     }
   }
-
   openSearchGuestModal() {
     this.dialog.open(this.searchGuestModal, {
       width: '80%',
@@ -78,7 +77,6 @@ export class ReservationCreateComponent implements OnInit {
       maxHeight: '80%'
     })
   }
-
   searchGuests() {
     this.guestUsecaseService.findByFilter(this.guestFilterRequest).subscribe({
       next: (guests: GuestModel[]) => {
@@ -94,8 +92,6 @@ export class ReservationCreateComponent implements OnInit {
         this.searchResults = new MatTableDataSource(data)
       }
     })
-
-
   }
 
   selectGuest = (event: any) => {
@@ -114,7 +110,7 @@ export class ReservationCreateComponent implements OnInit {
     })
   }
 
-  private clearForm() {
+  clearForm() {
     this.selectedGuest = null
     this.reservationForm = this.fb.group({
       guestId: [null, Validators.required],

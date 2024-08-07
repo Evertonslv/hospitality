@@ -9,7 +9,7 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let element">
-        <button mat-button (click)="actionButton.onClick(element)">
+        <button mat-button class="action-button" (click)="actionButton.onClick(element)">
           {{ actionButton.label }}
         </button>
       </td>

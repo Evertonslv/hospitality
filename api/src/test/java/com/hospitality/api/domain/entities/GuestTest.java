@@ -21,41 +21,41 @@ class GuestTest {
     void shouldThrowExceptionWhenNameIsNull() {
         assertThatThrownBy(() -> new Guest(null, "123456789", "(47) 99999-9999"))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Name is required");
+                .hasMessage("O nome é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenNameIsEmpty() {
         assertThatThrownBy(() -> new Guest("", "123456789", "(47) 99999-9999"))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Name is required");
+                .hasMessage("O nome é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenDocumentIsNull() {
         assertThatThrownBy(() -> new Guest("Diana Prince", null, "(47) 99999-9999"))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Document is required");
+                .hasMessage("O documento é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenDocumentIsEmpty() {
         assertThatThrownBy(() -> new Guest("Diana Prince", "", "(47) 99999-9999"))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Document is required");
+                .hasMessage("O documento é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenPhoneNumberIsNull() {
         assertThatThrownBy(() -> new Guest("Diana Prince", "123456789", null))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Phone number is required");
+                .hasMessage("O número de telefone é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenPhoneNumberIsEmpty() {
         assertThatThrownBy(() -> new Guest("Diana Prince", "123456789", ""))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Phone number is required");
+                .hasMessage("O número de telefone é obrigatório");
     }
 }

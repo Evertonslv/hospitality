@@ -44,7 +44,7 @@ export class GuestCreateComponent implements OnInit {
     }
   }
 
-  private clearForm() {
+  clearForm() {
     this.cadastroForm = this.fb.group({
       name: ['', Validators.required],
       document: ['', Validators.required],

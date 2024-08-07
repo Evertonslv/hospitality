@@ -5,7 +5,6 @@ import com.hospitality.api.domain.exceptions.ReservationNotFoundException;
 import com.hospitality.api.domain.usecases.dtos.ChargeDetail;
 import com.hospitality.api.domain.usecases.dtos.CheckOutResponse;
 import com.hospitality.api.domain.usecases.dtos.ReservationCheckInOutRequest;
-import com.hospitality.api.domain.usecases.dtos.ReservationResponse;
 import com.hospitality.api.domain.usecases.gateways.ReservationGateway;
 import com.hospitality.api.domain.usecases.mappers.ReservationDtoMapper;
 import lombok.AllArgsConstructor;

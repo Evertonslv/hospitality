@@ -46,28 +46,28 @@ class ReservationTest {
     void shouldThrowExceptionWhenGuestIsNull() {
         assertThatThrownBy(() -> new Reservation(null, checkInDate, checkOutDate, true, reservationDate, status))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Guest is required");
+                .hasMessage("O hóspede é obrigatório");
     }
 
     @Test
     void shouldThrowExceptionWhenCheckInDateIsNull() {
         assertThatThrownBy(() -> new Reservation(guest, null, checkOutDate, true, reservationDate, status))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Check-in and Check-out dates are required");
+                .hasMessage("As datas de check-in e check-out são obrigatórias");
     }
 
     @Test
     void shouldThrowExceptionWhenCheckOutDateIsNull() {
         assertThatThrownBy(() -> new Reservation(guest, checkInDate, null, true, reservationDate, status))
                 .isInstanceOf(MissingInformationException.class)
-                .hasMessage("Check-in and Check-out dates are required");
+                .hasMessage("As datas de check-in e check-out são obrigatórias");
     }
 
     @Test
     void shouldThrowExceptionWhenCheckOutDateIsBeforeCheckInDate() {
         assertThatThrownBy(() -> new Reservation(guest, checkOutDate, checkInDate, true, reservationDate, status))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-out date must be after check-in date");
+                .hasMessage("A data de check-out deve ser posterior à data de check-in");
     }
 
     @Test
@@ -89,7 +89,7 @@ class ReservationTest {
 
         assertThatThrownBy(() -> reservation.checkIn(checkInTime))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in cannot be done before 2 PM on the check-in date");
+                .hasMessage("O check-in não pode ser realizado antes das 14h na data de check-in");
     }
 
     @Test
@@ -113,7 +113,7 @@ class ReservationTest {
 
         assertThatThrownBy(() -> reservation.checkOut(checkOutTime))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Cannot check out without checking in first");
+                .hasMessage("Não é possível fazer o check-out sem ter feito o check-in primeiro");
     }
 
     @Test
@@ -122,7 +122,7 @@ class ReservationTest {
 
         assertThatThrownBy(reservation::calculateTotalAmount)
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Cannot calculate total amount without checkout in first");
+                .hasMessage("Não é possível calcular o valor total sem realizar o check-out primeiro");
     }
 
     @Test
@@ -172,7 +172,7 @@ class ReservationTest {
 
         assertThatThrownBy(() -> reservation.checkIn(checkInTime))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-in has already been done");
+                .hasMessage("O check-in já foi realizado");
     }
 
     @Test
@@ -187,7 +187,7 @@ class ReservationTest {
 
         assertThatThrownBy(() -> reservation.checkOut(checkOutTime))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-out has already been done");
+                .hasMessage("O check-out já foi realizado");
     }
 
     @Test

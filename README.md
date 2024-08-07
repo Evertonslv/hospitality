@@ -1,5 +1,5 @@
 # Sistema de Reservas de Hotel
-![Imagem do Sistema](image.png)
+![Imagem do Sistema](https://github.com/Evertonslv/hospitality/blob/main/system-image.png)
 
 ## Descrição
 
@@ -21,7 +21,7 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
 
     ```bash
     git clone URL_DO_REPOSITORIO_AQUI
-    cd nome_do_repositorio
+    cd hospitality
     ```
 
 3. **Navegue até o diretório onde o arquivo `docker-compose.yml` está localizado.**
@@ -46,20 +46,24 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
 1. **Para rodar os testes de unidade no backend, utilize o seguinte comando:**
 
     ```bash
+    cd hospitality/api
     ./mvnw test
     ```
 
 2. **Os resultados dos testes serão exibidos no terminal.**
+
 
 ### Frontend
 
 1. **Para rodar os testes de unidade no frontend, utilize o seguinte comando dentro do diretório do frontend:**
 
     ```bash
-    ng test
+    cd hospitality/client
+    npm run test
     ```
 
-2. **Os resultados dos testes serão exibidos no terminal.**
+2. **Para visualizar os resultados dos testes acesse via navegador a URL:**
+    - Jasmine: [http://localhost:9876](http://localhost:9876)
 
 ## Arquitetura e Organização das Pastas
 

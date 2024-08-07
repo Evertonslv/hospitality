@@ -43,10 +43,10 @@ public class CreateReservationUseCase {
 
     private void validateDates(LocalDate checkInDate, LocalDate checkOutDate) {
         if (checkInDate.isAfter(checkOutDate)) {
-            throw new InvalidInformationException("Check-out date must be after check-in date");
+            throw new InvalidInformationException("A data de check-out deve ser posterior à data de check-in");
         }
         if (checkInDate.isBefore(LocalDate.now())) {
-            throw new InvalidInformationException("Check-in date cannot be in the past");
+            throw new InvalidInformationException("A data de check-in não pode ser no passado");
         }
     }
 }

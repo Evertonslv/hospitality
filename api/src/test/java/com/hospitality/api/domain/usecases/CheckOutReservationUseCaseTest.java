@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,15 +53,19 @@ public class CheckOutReservationUseCaseTest {
                 guest,
                 LocalDate.of(2024, 8, 4),
                 LocalDate.of(2024, 8, 6),
-                LocalDateTime.of(2024, 8, 4, 15, 0),
-                LocalDateTime.of(2024, 8, 6, 10, 0),
+                null,
+                null,
                 true,
                 LocalDateTime.of(2024, 8, 3, 10, 0),
                 ReservationStatus.PENDING
         );
 
-        details = new ArrayList<>();
-        details.add(new ChargeDetail("Diária normal", 120.0));
+        details = Arrays.asList(
+                new ChargeDetail("Taxa de estacionamento (dia de semana)", 15.0, 1),
+                new ChargeDetail("Taxa de estacionamento (final de semana)", 20.0, 1),
+                new ChargeDetail("Diária (dia de semana)", 120.0, 1),
+                new ChargeDetail("Diária (final de semana)", 180.0, 1)
+        );
 
         checkOutResponse = new CheckOutResponse(
                 reservationId,
@@ -71,17 +76,17 @@ public class CheckOutReservationUseCaseTest {
                 LocalDateTime.of(2024, 8, 4, 15, 0),
                 LocalDateTime.of(2024, 8, 6, 11, 0),
                 true,
-                LocalDateTime.of(2024, 8, 3, 20, 0),
+                LocalDateTime.of(2024, 8, 3, 10, 0),
                 ReservationStatus.CHECKED_OUT
         );
     }
 
     @Test
-    void shouldCheckInReservationSuccessfully() {
+    void shouldCheckOutReservationSuccessfully() {
         reservation.checkIn(LocalDateTime.of(2024, 8, 4, 15, 0));
 
         when(reservationGateway.findById(reservationId)).thenReturn(reservation);
-        when(reservationDtoMapper.toCheckOutResponse(reservation, details)).thenReturn(checkOutResponse);
+        when(reservationDtoMapper.toCheckOutResponse(any(Reservation.class), anyList())).thenReturn(checkOutResponse);
         reservationCheckInOutRequest = new ReservationCheckInOutRequest(reservationId, LocalDateTime.of(2024, 8, 6, 11, 0));
 
         CheckOutResponse response = checkOutReservationUseCase.execute(reservationCheckInOutRequest);
@@ -92,7 +97,6 @@ public class CheckOutReservationUseCaseTest {
 
         verify(reservationGateway).findById(reservationId);
         verify(reservationGateway).save(reservation);
-        verify(reservationDtoMapper).toResponse(reservation);
     }
 
     @Test
@@ -109,7 +113,7 @@ public class CheckOutReservationUseCaseTest {
 
         assertThatThrownBy(() -> checkOutReservationUseCase.execute(reservationCheckInOutRequest))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Cannot check out without checking in first");
+                .hasMessage("Não é possível fazer o check-out sem ter feito o check-in primeiro");
 
         verify(reservationGateway).findById(reservationId);
         verifyNoMoreInteractions(reservationGateway, reservationDtoMapper);
@@ -134,7 +138,7 @@ public class CheckOutReservationUseCaseTest {
 
         assertThatThrownBy(() -> checkOutReservationUseCase.execute(reservationCheckInOutRequest))
                 .isInstanceOf(InvalidInformationException.class)
-                .hasMessage("Check-out has already been done");
+                .hasMessage("O check-out já foi realizado");
 
         verify(reservationGateway).findById(reservationId);
         verifyNoMoreInteractions(reservationGateway, reservationDtoMapper);

@@ -27,18 +27,6 @@ services:
       - "4200:4200"
     volumes:
       - ./client:/opt/project
-      
-  hospitality-api:
-    image: hospitality/api
-    container_name: hospitality-api
-    build: ./api
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./api:/opt/project
 
 volumes:
   postgres_data:

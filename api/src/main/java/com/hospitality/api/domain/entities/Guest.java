@@ -35,15 +35,15 @@ public class Guest {
 
     private void validateDates() {
         if (name == null || name.isEmpty()) {
-            throw new MissingInformationException("Name is required");
+            throw new MissingInformationException("O nome é obrigatório");
         }
 
         if (document == null || document.isEmpty()) {
-            throw new MissingInformationException("Document is required");
+            throw new MissingInformationException("O documento é obrigatório");
         }
 
         if (phone == null || phone.isEmpty()) {
-            throw new MissingInformationException("Phone number is required");
+            throw new MissingInformationException("O número de telefone é obrigatório");
         }
     }
 }

@@ -42,7 +42,8 @@ export class ReservationListComponent implements OnInit {
   constructor(
     public dialog: MatDialog,
     private reservationList: ReservationUsecaseService,
-    private snackBar: MatSnackBar) {  }
+    private snackBar: MatSnackBar) {
+  }
 
   ngOnInit() {
     this.searchReservation()
@@ -53,14 +54,14 @@ export class ReservationListComponent implements OnInit {
     this.searchReservation()
   }
 
-  private searchReservation() {
+  searchReservation() {
     if (this.selectedButton === '1') {
-      this.configButtonTable = { label: 'CheckIn', onClick: this.executeCheckIn }
+      this.configButtonTable = {label: 'CheckIn', onClick: this.executeCheckIn}
       this.reservationList.findPending().subscribe(
         (reservations: ReservationModel[]) => this.handler(reservations)
       )
     } else {
-      this.configButtonTable = { label: 'CheckOut', onClick: this.executeCheckOut }
+      this.configButtonTable = {label: 'CheckOut', onClick: this.executeCheckOut}
       this.reservationList.findCheckIn().subscribe(
         (reservations: ReservationModel[]) => this.handler(reservations)
       )
@@ -97,15 +98,15 @@ export class ReservationListComponent implements OnInit {
   executeCheckOut = (event: any) => {
     const checkinoutRequestModel: ReservationCheckinoutRequestModel = {
       reservationId: event.id,
-      checkInOutDateTime: new Date()
+      checkInOutDateTime: new Date(2024, 8, 6, 10, 0)
     }
 
     this.reservationList.checkOut(checkinoutRequestModel).subscribe({
       next: (checkout: CheckoutModel) => {
         this.detailCheckOut = checkout.chargeDetail
         this.dialog.open(this.detailTotalAmountModal, {
-          width: '40%',
-          maxWidth: '500px'
+          width: '50%',
+          maxWidth: '600px'
         })
       },
       error: (err) => this.showSnackBar(err),
@@ -124,5 +125,9 @@ export class ReservationListComponent implements OnInit {
 
   closeModal() {
     this.dialog.closeAll()
+  }
+
+  getTotalAmount(): number {
+    return this.detailCheckOut.reduce((total, detail) => total + detail.amount, 0);
   }
 }

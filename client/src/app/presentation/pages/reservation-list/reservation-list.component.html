@@ -28,7 +28,10 @@
       <div *ngIf="detailCheckOut">
         <mat-card class="guest-info">
           <p *ngFor="let detail of detailCheckOut">
-            <strong>{{ detail.description }}:</strong> {{ detail.amount | currency:'BRL':'symbol':'1.2-2' }}
+            <strong>{{ detail.quantity }} {{ detail.description }}:</strong> {{ detail.amount | currency:'BRL':'symbol':'1.2-2' }}
+          </p>
+          <p>
+            <strong>Total:</strong> {{ getTotalAmount() | currency:'BRL':'symbol':'1.2-2' }}
           </p>
         </mat-card>
       </div>

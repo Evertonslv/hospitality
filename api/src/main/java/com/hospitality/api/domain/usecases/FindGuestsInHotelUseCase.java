@@ -2,7 +2,6 @@ package com.hospitality.api.domain.usecases;
 
 import com.hospitality.api.domain.entities.Reservation;
 import com.hospitality.api.domain.entities.ReservationStatus;
-import com.hospitality.api.domain.usecases.dtos.GuestResponse;
 import com.hospitality.api.domain.usecases.dtos.ReservationResponse;
 import com.hospitality.api.domain.usecases.gateways.ReservationGateway;
 import com.hospitality.api.domain.usecases.mappers.ReservationDtoMapper;
