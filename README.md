@@ -20,7 +20,7 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
 2. **Clone o repositório do sistema:**
 
     ```bash
-    git clone URL_DO_REPOSITORIO_AQUI
+    git clone https://github.com/Evertonslv/hospitality.git
     cd hospitality
     ```
 
@@ -66,8 +66,6 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
     - Jasmine: [http://localhost:9876](http://localhost:9876)
 
 ## Arquitetura e Organização das Pastas
-
-![Diagrama da Arquitetura Limpa](URL_DO_DIAGRAMA_AQUI)
 
 ### Backend
 

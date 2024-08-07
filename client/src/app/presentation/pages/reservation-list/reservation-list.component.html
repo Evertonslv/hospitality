@@ -28,7 +28,8 @@
       <div *ngIf="detailCheckOut">
         <mat-card class="guest-info">
           <p *ngFor="let detail of detailCheckOut">
-            <strong>{{ detail.quantity }} {{ detail.description }}:</strong> {{ detail.amount | currency:'BRL':'symbol':'1.2-2' }}
+            <strong>{{ detail.quantity }} {{ detail.description }}
+              :</strong> {{ detail.amount | currency:'BRL':'symbol':'1.2-2' }}
           </p>
           <p>
             <strong>Total:</strong> {{ getTotalAmount() | currency:'BRL':'symbol':'1.2-2' }}
@@ -42,3 +43,31 @@
     </div>
   </mat-dialog-content>
 </ng-template>
+
+<ng-template #dateCheckInOut let-modal>
+  <h2 mat-dialog-title>Selecione uma data e hora</h2>
+  <mat-dialog-content>
+    <div class="full-width">
+      <mat-form-field appearance="outline">
+        <mat-label>Selecione uma Data</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Selecione uma Hora</mat-label>
+        <input matInput type="time" [(ngModel)]="selectedTime">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <p>Data e Hora selecionado: {{ getDateTime() | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+    <div class="button-container">
+      <button mat-raised-button color="accent" (click)="closeModal()">OK</button>
+    </div>
+  </mat-dialog-content>
+</ng-template>
+

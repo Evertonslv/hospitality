@@ -38,8 +38,8 @@ describe('TableComponent', () => {
 
     component.ngOnChanges(changes);
 
-    expect(component.dataSource?.paginator).toBe(component.paginator);
-    expect(component.dataSource?.sort).toBe(component.sort);
+    expect(component.dataSource.paginator).toBe(component.paginator);
+    expect(component.dataSource.sort).toBe(component.sort);
   });
 
   it('should set paginator and sort on ngAfterViewInit if dataSource is present', () => {
@@ -48,18 +48,8 @@ describe('TableComponent', () => {
 
     component.ngAfterViewInit();
 
-    expect(component.dataSource?.paginator).toBe(component.paginator);
-    expect(component.dataSource?.sort).toBe(component.sort);
-  });
-
-  it('should not set paginator and sort if dataSource is not present', () => {
-    component.dataSource = undefined
-
-    component.ngOnChanges({});
-    component.ngAfterViewInit();
-
-    expect(component.paginator).toBeDefined();
-    expect(component.sort).toBeDefined();
+    expect(component.dataSource.paginator).toBe(component.paginator);
+    expect(component.dataSource.sort).toBe(component.sort);
   });
 
 });

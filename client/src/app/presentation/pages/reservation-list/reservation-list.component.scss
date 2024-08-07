@@ -44,6 +44,10 @@ mat-button-toggle {
 .full-width {
   width: 100%;
   margin-top: 11px !important;
+
+  mat-form-field {
+    margin-right: 15px;
+  }
 }
 
 .button-container {

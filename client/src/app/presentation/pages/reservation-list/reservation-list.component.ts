@@ -5,17 +5,19 @@ import {MatTableDataSource} from "@angular/material/table"
 import {ReservationUsecaseService} from "../../../domain/usecases"
 import {ReservationCheckinoutRequestModel, ReservationModel} from "../../../domain/models"
 import {MatFormField, MatHint, MatLabel, MatOption, MatSelect} from "@angular/material/select"
-import {CurrencyPipe, formatDate, NgForOf, NgIf} from "@angular/common"
+import {CurrencyPipe, DatePipe, formatDate, NgForOf, NgIf} from "@angular/common"
 import {MatSnackBar} from "@angular/material/snack-bar"
 import {MatButton, MatIconButton} from "@angular/material/button"
 import {MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup} from "@angular/material/button-toggle"
 import {MatDialog, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import {MatInput} from "@angular/material/input";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatCard} from "@angular/material/card";
 import {MatIcon} from "@angular/material/icon";
 import {CheckoutModel} from "../../../domain/models/checkout.model";
 import {CheckoutDetailModel} from "../../../domain/models/checkout-detail.model";
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from "@angular/material/datepicker";
+import {MatSuffix} from "@angular/material/form-field";
 
 @Component({
   selector: 'app-reservation-list',
@@ -25,19 +27,27 @@ import {CheckoutDetailModel} from "../../../domain/models/checkout-detail.model"
     FooterComponent, TableComponent,
     MatSelect, MatOption, NgForOf,
     MatFormField, MatLabel, MatButton,
-    MatButtonToggleGroup, MatButtonToggle, MatDialogContent, MatDialogTitle, MatHint, MatInput, ReactiveFormsModule, MatCard, MatIcon, MatIconButton, NgIf, CurrencyPipe
+    MatButtonToggleGroup, MatButtonToggle,
+    MatDialogContent, MatDialogTitle, MatHint,
+    MatInput, ReactiveFormsModule, MatCard,
+    MatIcon, MatIconButton, NgIf, CurrencyPipe,
+    MatDatepickerInput, MatDatepickerToggle,
+    MatDatepicker, FormsModule, MatSuffix, DatePipe
   ],
   templateUrl: './reservation-list.component.html',
   styleUrl: './reservation-list.component.scss'
 })
 export class ReservationListComponent implements OnInit {
   @ViewChild('detailTotalAmountModal') detailTotalAmountModal!: TemplateRef<any>
+  @ViewChild('dateCheckInOut') dateCheckInOut!: TemplateRef<any>
 
   dataSource: MatTableDataSource<any>
-  displayedColumns: string[] = ['name', 'document', 'phone', 'reservationDate']
+  displayedColumns: string[]
   selectedButton = '1'
   configButtonTable: { label: string, onClick: (element: any) => void }
   detailCheckOut: CheckoutDetailModel[];
+  selectedDate: Date;
+  selectedTime: string;
 
   constructor(
     public dialog: MatDialog,
@@ -49,6 +59,17 @@ export class ReservationListComponent implements OnInit {
     this.searchReservation()
   }
 
+  getDateTime(): Date | null {
+    if (this.selectedDate && this.selectedTime) {
+      const date = new Date(this.selectedDate)
+      const [hour, minute] = this.selectedTime.split(':')
+      date.setHours(+hour, +minute, 0)
+      return date
+    }
+
+    return null
+  }
+
   onSelectionChange(event: MatButtonToggleChange) {
     this.selectedButton = event.value
     this.searchReservation()
@@ -56,11 +77,13 @@ export class ReservationListComponent implements OnInit {
 
   searchReservation() {
     if (this.selectedButton === '1') {
+      this.displayedColumns = ['name', 'document', 'phone', 'reservationDate']
       this.configButtonTable = {label: 'CheckIn', onClick: this.executeCheckIn}
       this.reservationList.findPending().subscribe(
         (reservations: ReservationModel[]) => this.handler(reservations)
       )
     } else {
+      this.displayedColumns = ['name', 'document', 'phone', 'checkInTime']
       this.configButtonTable = {label: 'CheckOut', onClick: this.executeCheckOut}
       this.reservationList.findCheckIn().subscribe(
         (reservations: ReservationModel[]) => this.handler(reservations)
@@ -75,7 +98,8 @@ export class ReservationListComponent implements OnInit {
         name: reservation.guest.name,
         document: reservation.guest.document,
         phone: reservation.guest.phone,
-        reservationDate: formatDate(reservation.reservationDate, 'dd/MM/YYYY HH:mm', 'en')
+        reservationDate: formatDate(reservation.reservationDate, 'dd/MM/YYYY HH:mm', 'en'),
+        checkInTime: reservation.checkInTime ? formatDate(reservation.checkInTime, 'dd/MM/YYYY HH:mm', 'en') : ''
       }
     })
 
@@ -83,34 +107,60 @@ export class ReservationListComponent implements OnInit {
   }
 
   executeCheckIn = (event: any) => {
-    const checkinoutRequestModel: ReservationCheckinoutRequestModel = {
-      reservationId: event.id,
-      checkInOutDateTime: new Date()
-    }
+    this.dialog.open(this.dateCheckInOut, {
+      width: '50%',
+      maxWidth: '550px'
+    }).afterClosed().subscribe({
+      next: () => {
+        const date = this.getDateTime()
 
-    this.reservationList.checkIn(checkinoutRequestModel).subscribe({
-      next: () => this.showSnackBar('Checkin realizado com sucesso'),
-      error: (err) => this.showSnackBar(err),
-      complete: () => this.searchReservation()
+        if(date) {
+          const checkinoutRequestModel: ReservationCheckinoutRequestModel = {
+            reservationId: event.id,
+            checkInOutDateTime: date
+          }
+
+          this.reservationList.checkIn(checkinoutRequestModel).subscribe({
+            next: () => this.showSnackBar('Checkin realizado com sucesso'),
+            error: (err) => this.showSnackBar(err),
+            complete: () => this.searchReservation()
+          })
+        } else {
+          this.showSnackBar('Selecione uma data e hora para fazer o CheckIn')
+        }
+      }
     })
   }
 
   executeCheckOut = (event: any) => {
-    const checkinoutRequestModel: ReservationCheckinoutRequestModel = {
-      reservationId: event.id,
-      checkInOutDateTime: new Date(2024, 8, 6, 10, 0)
-    }
+    this.dialog.open(this.dateCheckInOut, {
+      width: '50%',
+      maxWidth: '550px'
+    }).afterClosed().subscribe({
+      next: () => {
+        const date = this.getDateTime()
 
-    this.reservationList.checkOut(checkinoutRequestModel).subscribe({
-      next: (checkout: CheckoutModel) => {
-        this.detailCheckOut = checkout.chargeDetail
-        this.dialog.open(this.detailTotalAmountModal, {
-          width: '50%',
-          maxWidth: '600px'
-        })
-      },
-      error: (err) => this.showSnackBar(err),
-      complete: () => this.searchReservation()
+        if(date) {
+          const checkinoutRequestModel: ReservationCheckinoutRequestModel = {
+            reservationId: event.id,
+            checkInOutDateTime: date
+          }
+
+          this.reservationList.checkOut(checkinoutRequestModel).subscribe({
+            next: (checkout: CheckoutModel) => {
+              this.detailCheckOut = checkout.chargeDetail
+              this.dialog.open(this.detailTotalAmountModal, {
+                width: '50%',
+                maxWidth: '600px'
+              })
+            },
+            error: (err) => this.showSnackBar(err),
+            complete: () => this.searchReservation()
+          })
+        } else {
+          this.showSnackBar('Selecione uma data e hora para fazer o CheckOut')
+        }
+      }
     })
   }
 
