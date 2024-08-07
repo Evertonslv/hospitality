@@ -24,9 +24,7 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
     cd hospitality
     ```
 
-3. **Navegue até o diretório onde o arquivo `docker-compose.yml` está localizado.**
-
-4. **Execute o comando para iniciar os containers:**
+3. **Execute o comando para iniciar os containers:**
 
     ```bash
     docker-compose up
@@ -34,7 +32,7 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
 
    Esse comando irá construir as imagens necessárias e iniciar os containers para o backend, frontend e banco de dados.
 
-5. **Acesse o sistema via navegador na URL:**
+4. **Acesse o sistema via navegador na URL:**
 
     - Frontend: [http://localhost:4200](http://localhost:4200)
     - Backend: [http://localhost:8080](http://localhost:8080)
@@ -46,8 +44,9 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
 1. **Para rodar os testes de unidade no backend, utilize o seguinte comando:**
 
     ```bash
-    cd hospitality/api
-    ./mvnw test
+    cd hospitality
+    docker build -t api-test -f Dockerfile.test ./api
+    docker run --rm api-test
     ```
 
 2. **Os resultados dos testes serão exibidos no terminal.**
@@ -76,8 +75,8 @@ Este sistema de reservas de hotel foi desenvolvido utilizando Java 17 e Spring B
     - `UseCase/`: Casos de uso e lógica de aplicação.
   - `Infrastructure/`: Implementações técnicas e de infraestrutura.
     - `Controller/`: Controladores REST.
-    - `Persistence/`: Persistência de dados e mapeamento.
-    - `Repository/`: Interfaces de repositório.
+    - `Persistence/`: Persistência de dados e mapeamento do JPA.
+    - `Repository/`: Implementação das Interfaces de repositório.
     - `Response/`: Modelos de resposta.
   - `main/`: Configurações do Spring Boot.
     - `Beans/`: Configurações de beans do Spring.
